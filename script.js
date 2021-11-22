@@ -39,7 +39,7 @@ const palettes = {
       } else {
       paletteColors.style.backgroundColor = palettes.paletteRandomColor(paletteColors.style.backgroundColor);
       }
-      
+
       paletteColors.addEventListener('click', function (event) {
         colorSelected = event.target.style.backgroundColor;
         palettes.desSelectedPalettes();
@@ -54,15 +54,15 @@ const palettes = {
 }
 
 const board = {
-  boardGenerator() {
+  boardGenerator(length) {
     let fullFrame = document.querySelector('#pixel-board');
 
-    for (let i = 0; i < 5; i += 1) {
+    for (let i = 0; i < length; i += 1) {
       let rowBoard = document.createElement('div');
       rowBoard.className = 'pixel-row';
       fullFrame.appendChild(rowBoard);
 
-      for (let j = 0; j < 5; j += 1) {
+      for (let j = 0; j < length; j += 1) {
         let pixels = document.createElement('div');
         pixels.className = 'pixel';
         pixels.addEventListener('click', function(event) {
@@ -72,7 +72,48 @@ const board = {
         rowBoard.appendChild(pixels);
       }
     }
-  }
+  },
+}
+
+const eventButtons = { 
+  cleanButton() {
+    let button = document.querySelector('#clear-board');
+
+    button.addEventListener('click', function () {
+      let pixelBlock = document.querySelectorAll('.pixel');
+
+      for (let i = 0; i < pixelBlock.length; i += 1) {
+        pixelBlock[i].style.backgroundColor = 'white';
+      };
+    })
+  },
+
+  buttonEvent(size) {
+    if (size < 5) {
+      size = 5;
+    } else if (size > 50) {
+      size = 50;
+    }
+
+    let table = document.querySelector('#pixel-board');
+    table.innerHTML = '';
+
+    board.boardGenerator(size);
+  },
+
+  sizeButton() {
+    let button = document.querySelector('#generate-board');
+    let input = document.querySelector('#board-size');
+    
+    button.addEventListener('click', function (event) {
+      if (input.value >= 1) {
+        eventButtons.buttonEvent(input.value);
+        input.value = '';
+      } else {
+        alert('Board inválido!');
+      }
+    });
+  },
 }
 
 function initDom() {
@@ -80,8 +121,13 @@ function initDom() {
   palettes.paletteGenerator();
 
   // Gerar quadro em brancos
-  board.boardGenerator();
+  board.boardGenerator(5);
 
+  // Ativar evento do botão de limpar
+  eventButtons.cleanButton();
+
+  // Ativar opção de escolher tamanho do quadro de Pixels
+  eventButtons.sizeButton();
 };
 
 // Variável principal do programa.

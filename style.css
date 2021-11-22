@@ -19,12 +19,13 @@ body {
 
 #options {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
   padding-top: 4rem;
 }
 
 #color-palette {
-  margin-right: 4rem;
   display: flex;
   gap: 3rem;
 }
@@ -33,6 +34,44 @@ body {
   width: 6.5rem;
   height: 6.5rem;
   border: 0.1rem solid black;
+  cursor: pointer;
+}
+
+#menu-options {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+#clear-board {
+  padding: 1rem;
+  font-size: 2rem;
+  background-color: aquamarine;
+  border: 0.1rem solid black;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+#menu-options-input-container {
+  display: flex;
+}
+
+#board-size {
+  width: 10rem;
+  padding: 1rem;
+  border-radius: 0.5rem 0 0 0.5rem;
+  border: 1px solid black;
+  border-right: 0;
+  font-size: 1.5rem;
+}
+
+#generate-board {
+  width: 5rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  border: 1px solid black;
+  background-color: aquamarine;
+  cursor: pointer;
+  font-size: 1.5rem;
 }
 
 #content {
@@ -55,6 +94,7 @@ body {
 .pixel {
   width: 4rem;
   height: 4rem;
-  border: 1px solid rgb(0, 0, 0);
-  background-color: rgb(255, 255, 255);
+  border: 1px solid black;
+  background-color: white;
+  cursor: pointer;
 }
