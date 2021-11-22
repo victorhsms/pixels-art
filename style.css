@@ -1,0 +1,39 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+}
+
+body {
+  background-color: rgb(229, 228, 226);
+}
+
+#title {
+  text-align: center;
+  font-size: 6rem;
+  background-color: aquamarine;
+  padding: 2rem 0;
+}
+
+#options {
+  display: flex;
+  justify-content: center;
+  padding-top: 4rem;
+}
+
+#color-palette {
+  margin-right: 4rem;
+  display: flex;
+  gap: 3rem;
+}
+
+.color {
+  width: 6.5rem;
+  height: 6.5rem;
+  border: 0.1rem solid black;
+}
+
+
+
