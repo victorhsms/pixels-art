@@ -1,8 +1,16 @@
+// Variáveis de cor
+const black = 'rgb(0, 0, 0)';
+const white = 'rgb(255, 255, 255)';
+
+// Variável principal do programa.
+let colorSelected = black;
+
 const palettes = {
-  paletteRandomColor(rainbowColor) {
-    rainbowColor = `rgb(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)})`;
-    // Ver se é preta (visto que a primeira ja é preta) ou se é branca (Não pode branco)
-    if (rainbowColor === 'rgb(255, 255, 255)' || rainbowColor === 'rgb(0, 0, 0)') {
+  paletteRandomColor(color) {
+    let rainbowColor = color;
+    rainbowColor = `rgb(${Math.round(Math.random() * 255)},`;
+    rainbowColor += ` ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)})`;
+    if (rainbowColor === white || rainbowColor === black) {
       // src: https://developer.mozilla.org/pt-BR/docs/Web/API/Location/reload
       document.location.reload(true);
     }
@@ -11,110 +19,101 @@ const palettes = {
   },
 
   unevenPalettes() {
-    let palette = document.querySelectorAll('.color');
+    const palette = document.querySelectorAll('.color');
+    const paletteOne = palette[1].style.backgroundColor;
+    const paletteTwo = palette[2].style.backgroundColor;
+    const paletteThree = palette[3].style.backgroundColor;
 
-    if (palette[1].style.backgroundColor === palette[2].style.backgroundColor || palette[1].style.backgroundColor === palette[3].style.backgroundColor) {
-      document.location.reload(true);
-    } else if (palette[2].style.backgroundColor === palette[3].style.backgroundColor) {
+    if (paletteOne === paletteTwo || paletteOne === paletteThree || paletteTwo === paletteThree) {
       document.location.reload(true);
     }
   },
 
   desSelectedPalettes() {
-    let palette = document.querySelectorAll('.color');
-    for (var i = 0; i < palette.length; i += 1) {
+    const palette = document.querySelectorAll('.color');
+    for (let i = 0; i < palette.length; i += 1) {
       palette[i].className = 'color';
-    };
+    }
+  },
+
+  selectedColor(event) {
+    const eventSelected = event.target;
+    colorSelected = eventSelected.style.backgroundColor;
+    palettes.desSelectedPalettes();
+    eventSelected.className += ' selected';
   },
   paletteGenerator() {
-    let boxesOfPalettes = document.querySelector('#color-palette');
-    
+    const boxesOfPalettes = document.querySelector('#color-palette');
     for (let i = 0; i < 4; i += 1) {
-      let paletteColors = document.createElement('div');
-      paletteColors.className = 'color';
+      const pColor = document.createElement('div');
+      pColor.className = 'color';
       if (i === 0) {
-      // Primeira cor é preta
-      paletteColors.style.backgroundColor = 'rgb(0, 0, 0)';
-      paletteColors.className += ' selected';
+        pColor.style.backgroundColor = black;
+        pColor.className += ' selected';
       } else {
-      paletteColors.style.backgroundColor = palettes.paletteRandomColor(paletteColors.style.backgroundColor);
+        pColor.style.backgroundColor = palettes.paletteRandomColor(pColor.style.backgroundColor);
       }
-
-      paletteColors.addEventListener('click', function (event) {
-        colorSelected = event.target.style.backgroundColor;
-        palettes.desSelectedPalettes();
-        event.target.className += ' selected';
-      });
-
-      boxesOfPalettes.appendChild(paletteColors);
-    };
-    
+      pColor.addEventListener('click', palettes.selectedColor);
+      boxesOfPalettes.appendChild(pColor);
+    }
     palettes.unevenPalettes();
   },
-}
+};
 
 const board = {
+  selectedPixel(event) {
+    const eventPixels = event.target;
+    eventPixels.style.backgroundColor = colorSelected;
+  },
+
   boardGenerator(length) {
-    let fullFrame = document.querySelector('#pixel-board');
+    const fullFrame = document.querySelector('#pixel-board');
 
     for (let i = 0; i < length; i += 1) {
-      let rowBoard = document.createElement('div');
+      const rowBoard = document.createElement('div');
       rowBoard.className = 'pixel-row';
       fullFrame.appendChild(rowBoard);
 
       for (let j = 0; j < length; j += 1) {
-        let pixels = document.createElement('div');
+        const pixels = document.createElement('div');
         pixels.className = 'pixel';
-        pixels.addEventListener('click', function(event) {
-          event.target.style.backgroundColor = colorSelected;
-        })
-
+        pixels.addEventListener('click', board.selectedPixel);
         rowBoard.appendChild(pixels);
       }
     }
   },
-}
+};
 
-const eventButtons = { 
+const eventButtons = {
   cleanButton() {
-    let button = document.querySelector('#clear-board');
+    const pixelBlock = document.querySelectorAll('.pixel');
 
-    button.addEventListener('click', function () {
-      let pixelBlock = document.querySelectorAll('.pixel');
-
-      for (let i = 0; i < pixelBlock.length; i += 1) {
-        pixelBlock[i].style.backgroundColor = 'white';
-      };
-    })
+    for (let i = 0; i < pixelBlock.length; i += 1) {
+      pixelBlock[i].style.backgroundColor = white;
+    }
   },
 
-  buttonEvent(size) {
-    if (size < 5) {
-      size = 5;
-    } else if (size > 50) {
-      size = 50;
+  buttonEvent() {
+    const input = document.querySelector('#board-size');
+    if (input.value === '') {
+      alert('Board inválido!');
+      input.value = 5;
+    }
+    if (input.value < 5) {
+      input.value = 5;
+    }
+    if (input.value > 50) {
+      input.value = 50;
     }
 
-    let table = document.querySelector('#pixel-board');
+    const table = document.querySelector('#pixel-board');
     table.innerHTML = '';
 
-    board.boardGenerator(size);
-  },
+    board.boardGenerator(input.value);
 
-  sizeButton() {
-    let button = document.querySelector('#generate-board');
-    let input = document.querySelector('#board-size');
-    
-    button.addEventListener('click', function (event) {
-      if (input.value >= 1) {
-        eventButtons.buttonEvent(input.value);
-        input.value = '';
-      } else {
-        alert('Board inválido!');
-      }
-    });
+    input.value = '';
   },
-}
+};
 
 function initDom() {
   // Gerar paletas selecionaveis que não sejam brancas e verifica se as cores delas são diferentes
@@ -124,13 +123,13 @@ function initDom() {
   board.boardGenerator(5);
 
   // Ativar evento do botão de limpar
-  eventButtons.cleanButton();
+  const buttonClear = document.querySelector('#clear-board');
+  buttonClear.addEventListener('click', eventButtons.cleanButton);
 
   // Ativar opção de escolher tamanho do quadro de Pixels
-  eventButtons.sizeButton();
-};
+  const button = document.querySelector('#generate-board');
+  button.addEventListener('click', eventButtons.buttonEvent);
+}
 
-// Variável principal do programa.
-var colorSelected = 'rgb(0, 0, 0)';
-
+// Iniciando a DOM e os eventos
 initDom();
